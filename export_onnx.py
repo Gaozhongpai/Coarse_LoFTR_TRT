@@ -5,7 +5,6 @@ import torch.nn.utils.prune as prune
 import onnx
 from utils import make_student_config
 
-
 def main():
     parser = argparse.ArgumentParser(description='LoFTR demo.')
     parser.add_argument('--out_file', type=str, default='weights/LoFTR_teacher.onnx',
@@ -70,10 +69,19 @@ def main():
 
     print(f'Moving model to device: {device}')
     model = model.eval().to(device=device)
-
+    
+    img_size = (model_cfg['input_width'], model_cfg['input_height'])
+    input_names = ['image0', "image1"]
+    output_names = ["conf_matrix", "sim_matrix"]
     with torch.no_grad():
-        dummy_image = torch.randn(1, 1, default_cfg['input_height'], default_cfg['input_width'], device=device)
-        torch.onnx.export(model, (dummy_image, dummy_image), opt.out_file, verbose=True, opset_version=11)
+        dummy_image = torch.randn(1, 1, img_size[1], img_size[0], device=device)
+        torch.onnx.export(model, 
+                          (dummy_image, dummy_image), 
+                          opt.out_file, 
+                          verbose=False, 
+                          opset_version=12,
+                          input_names=input_names,
+                          output_names=output_names)
 
     model = onnx.load(opt.out_file)
     onnx.checker.check_model(model)

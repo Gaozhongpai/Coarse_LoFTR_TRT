@@ -97,12 +97,20 @@ def main():
 
                 # make batch
                 if stop_frame is None:
-                    frame0 = make_query_image(frame, img_size)
+                    frame0 = frame # make_query_image(frame, img_size)
                     stop_img = new_img.copy()
                 else:
                     frame0 = stop_frame
-
-                frame1 = make_query_image(frame, img_size)
+                    
+                frame1 = frame #  make_query_image(frame, img_size)
+                #### +++add ###
+                shape0 = frame0.shape[:2]  # current shape [height, width]
+                shape1 = frame1.shape[:2]  # current shape [height, width]
+                ratio = min(img_size[1] / shape0[0], img_size[0] / shape0[1], 
+                        img_size[1] / shape1[0], img_size[0] / shape1[1])
+                frame0, (dw0, dh0) = make_query_image(frame0, ratio)
+                frame1, (dw1, dh1) = make_query_image(frame1, ratio)
+                #### ---add ###
                 if use_trt or use_onnx:
                     img0 = frame0[None][None] / 255.0
                     img1 = frame1[None][None] / 255.0
