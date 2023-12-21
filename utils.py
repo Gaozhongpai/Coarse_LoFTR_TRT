@@ -63,7 +63,14 @@ def make_query_image(frame, ratio):
     # query_img = ratio_preserving_resize(query_img, img_size)
     return query_img, (dw, dh)
 
-def letterbox(img, r, new_shape=(480, 640), color=(114, 114, 114), auto=False, scaleFill=False, scaleup=True, stride=32):
+def make_query_image_v2(frame, ratio):
+    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+    query_img, (dw, dh) = letterbox(frame, ratio, (480, 480))
+    # query_img = ratio_preserving_resize(query_img, img_size)
+    return query_img, (dw, dh)
+
+
+def letterbox(img, r, new_shape=(480, 640), color=(0, 0, 0), auto=False, scaleFill=False, scaleup=True, stride=32):
     # Resize and pad image while meeting stride-multiple constraints
     shape = img.shape[:2]  # current shape [height, width]
     if isinstance(new_shape, int):

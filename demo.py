@@ -4,9 +4,9 @@ import sys
 import cv2
 import numpy as np
 import torch
-from loftr import LoFTR
-from loftr.utils.cvpr_ds_config import default_cfg
-from utils import make_query_image, get_coarse_match, make_student_config
+from .loftr import LoFTR
+from .loftr.utils.cvpr_ds_config import default_cfg
+from .utils import make_query_image, get_coarse_match, make_student_config
 
 repo = './'
 device = 'cuda'
@@ -40,14 +40,14 @@ img1_orig, (dw1, dh1) = make_query_image(img1_orig, ratio)
 img0 = torch.from_numpy(img0_orig)[None][None].to(device=device) / 255.0
 img1 = torch.from_numpy(img1_orig)[None][None].to(device=device) / 255.0
 
-f = os.path.join(repo, 'weights', 'LoFTR.onnx')
-input_names = ['image0', "image1"]
-output_names = ["conf_matrix", "sim_matrix"]
-torch.onnx.export(matcher, (img0, img1), f, 
-                          verbose=False, 
-                          opset_version=12, 
-                          input_names=input_names,
-                          output_names=output_names)
+# f = os.path.join(repo, 'weights', 'LoFTR.onnx')
+# input_names = ['image0', "image1"]
+# output_names = ["conf_matrix", "sim_matrix"]
+# torch.onnx.export(matcher, (img0, img1), f, 
+#                           verbose=False, 
+#                           opset_version=12, 
+#                           input_names=input_names,
+#                           output_names=output_names)
 
 #%%
 # Find matches
